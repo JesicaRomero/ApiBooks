@@ -15,7 +15,7 @@ async function find(req, res, next) {
 async function create(req, res, next) {
   const data = req.body
   try {
-    await bookService.register(data)
+    await bookService.create(data)
     res.json({ ok: true, message: 'Libro creado correctamente' })
   } catch (error) {
     next(error)
@@ -25,8 +25,11 @@ async function create(req, res, next) {
 async function deleteOne(req, res, next) {
   const { id } = req.query
   try {
-    const book = await bookService.deleteOne(id)
-    res.json({ book: book[0] })
+    const result = await bookService.deleteOne(id)
+    if (result.affectedRows === 0) {
+      res.json({ ok: false, message: 'No se pudo eliminar el libro' })
+    }
+    res.json({ ok: true, message: 'Libro eliminado correctamente' })
   } catch (error) {
     next(error)
   }
